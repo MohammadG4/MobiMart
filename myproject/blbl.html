@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MobiMart Product Manager</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; }
+    input, textarea { display: block; margin: 5px 0; width: 300px; padding: 6px; }
+    button { padding: 8px 16px; margin-top: 10px; }
+    img { max-width: 150px; margin: 5px; border-radius: 8px; }
+    .product { border: 1px solid #ccc; padding: 15px; margin: 15px 0; }
+  </style>
+</head>
+<body>
+
+  <h1>MobiMart Products</h1>
+
+  <h2>Add Product</h2>
+
+  <form id="productForm" enctype="multipart/form-data">
+
+    <input type="text" name="name" placeholder="Product Name" required />
+    <input type="text" name="brand" placeholder="Brand" required />
+    <input type="text" name="category" placeholder="Category" required />
+    <input type="number" step="0.01" name="price" placeholder="Price" required />
+    <input type="number" name="stock" placeholder="Stock" required />
+    <textarea name="description" placeholder="Description" required></textarea>
+
+    <h3>Specs</h3>
+    <input type="text" name="specs.ram" placeholder="RAM" />
+    <input type="text" name="specs.storage" placeholder="Storage" />
+    <input type="text" name="specs.cpu" placeholder="CPU" />
+    <input type="text" name="specs.gpu" placeholder="GPU" />
+    <input type="text" name="specs.camera_main" placeholder="Main Camera" />
+    <input type="text" name="specs.camera_front" placeholder="Front Camera" />
+    <input type="text" name="specs.battery" placeholder="Battery" />
+    <input type="text" name="specs.screen_size" placeholder="Screen Size" />
+    <input type="text" name="specs.screen_type" placeholder="Screen Type" />
+    <input type="text" name="specs.os" placeholder="OS" />
+    <input type="text" name="specs.sim" placeholder="SIM" />
+
+    <h3>Product Images</h3>
+    <input type="file" id="imageInput" multiple />
+
+    <button type="submit">Add Product</button>
+  </form>
+
+  <h2>Products</h2>
+  <div id="products"></div>
+
+<script>
+
+const API_URL = "http://127.0.0.1:8000/api/products/";
+const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzY0NDcxMDkwLCJpYXQiOjE3NjQ0NzAxOTAsImp0aSI6IjdjNjRkYTZlMzc2YzRiYjBhOGY4ZmE4MDNiYjIzNWY4IiwidXNlcl9pZCI6IjEifQ.XaYATW3t4diPPfQ61fXnSsKKNcLtWqux2vkoE-QXgoU";  // change this
+
+// Load all products
+async function loadProducts() {
+  const res = await fetch(API_URL);
+  const data = await res.json();
+
+  const container = document.getElementById("products");
+  container.innerHTML = "";
+
+  data.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "product";
+
+    div.innerHTML = `
+      <h3>${p.name} (${p.brand})</h3>
+      <p><b>Category:</b> ${p.category}</p>
+      <p><b>Price:</b> $${p.price}</p>
+      <p><b>Stock:</b> ${p.stock}</p>
+      <p>${p.description}</p>
+
+      <p><b>Specs:</b></p>
+      <ul>
+        <li>RAM: ${p.specs.ram}</li>
+        <li>Storage: ${p.specs.storage}</li>
+        <li>CPU: ${p.specs.cpu}</li>
+        <li>GPU: ${p.specs.gpu}</li>
+        <li>Camera Main: ${p.specs.camera_main}</li>
+        <li>Camera Front: ${p.specs.camera_front}</li>
+      </ul>
+
+      <div>
+        ${p.images.map(img => `<img src="${img.image}" />`).join("")}
+      </div>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+// When form is submitted
+document.getElementById("productForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData();
+
+  // Basic product fields
+  formData.append("name", e.target.name.value);
+  formData.append("brand", e.target.brand.value);
+  formData.append("category", e.target.category.value);
+  formData.append("price", e.target.price.value);
+  formData.append("stock", e.target.stock.value);
+  formData.append("description", e.target.description.value);
+
+  // Specs fields (nested)
+  const specsKeys = [
+    "ram", "storage", "cpu", "gpu", "camera_main", "camera_front",
+    "battery", "screen_size", "screen_type", "os", "sim"
+  ];
+
+  specsKeys.forEach(key => {
+    const field = e.target[`specs.${key}`];
+    if (field && field.value) {
+      formData.append(`specs.${key}`, field.value);
+    }
+  });
+
+  // Images (multiple)
+  const images = document.getElementById("imageInput").files;
+  for (let i = 0; i < images.length; i++) {
+    formData.append(`images[${i}].image`, images[i]);
+    formData.append(`images[${i}].is_main`, i === 0 ? "True" : "False");
+  }
+
+  // Send request
+  const res = await fetch(API_URL, {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${TOKEN}`
+    },
+    body: formData
+  });
+
+  const data = await res.json();
+
+  if (res.ok) {
+    alert("Product Created!");
+    e.target.reset();
+    loadProducts();
+  } else {
+    console.error(data);
+    alert("Something went wrong! Check console.");
+  }
+});
+
+// Load products when page opens
+loadProducts();
+
+</script>
+
+</body>
+</html>

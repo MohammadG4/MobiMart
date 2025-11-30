@@ -1,0 +1,74 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+
+# Django stuff
+*.log
+*.pot
+*.pyc
+*.pyo
+*.mo
+
+media/
+
+# Static files
+
+
+# Django secret files
+*.env
+.env.*
+.env
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
+# Byte-compiled
+*.pyc
+
+# Migrations (optional — delete if you want to keep them tracked)
+# **Be careful — usually migrations SHOULD be tracked**
+# */migrations/*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*.bak
+
+# Pip
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+
+# MyPy
+.mypy_cache/
+
+# Pytest
+.pytest_cache/
+
+# Build/Distribution
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Local settings
+local_settings.py

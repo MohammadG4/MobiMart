@@ -1,0 +1,15 @@
+userApp Done
+
+productApp Done
+
+cartApp 
+
+orderApp
+
+fixes:
+resetpassword userapp
+login with email not username userapp
+otp userapp
+o2th userapp
+
+don't forget to document
