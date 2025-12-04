@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-7+@nn*vn*@kwv6gczjwt+oi@0p4c5+p=1=onrz##dlk7lo51#v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'cartapp',
     'orderapp',
-
+    'searchapp',
 ]
 
 MIDDLEWARE = [
@@ -171,3 +171,13 @@ cloudinary.config(
     api_secret=config('CLOUDINARY_API_SECRET'),
     secure=True
 )
+
+
+
+
+
+
+MEILISEARCH_URL = config('MEILISEARCH_URL') # MeiliSearch URL
+MEILISEARCH_API_KEY =config('MEILISEARCH_API_KEY')   # Master key
+# Optional: default index name
+MEILISEARCH_INDEX = config('MEILISEARCH_INDEX') 
